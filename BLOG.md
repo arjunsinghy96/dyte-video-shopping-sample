@@ -1,4 +1,4 @@
-[200~# Introduction
+# Introduction
 In recent years, live shopping experiences have emerged as a popular way for businesses to connect with their customers in real-time, creating a more engaging and interactive shopping experience. With the increasing demand for virtual shopping, there is a need to build reliable and scalable solutions to deliver seamless live shopping experiences.
 
 In this technical blog, we will explore how to create a live shopping experience using Dyte SDK, React, and Django. Dyte SDK is a powerful real-time communication platform that enables businesses to integrate video, audio, and chat functionalities into their applications. React, a popular JavaScript library, provides a flexible and efficient way to build dynamic user interfaces. Django, a high-level Python web framework, provides a robust and scalable backend for our application.
