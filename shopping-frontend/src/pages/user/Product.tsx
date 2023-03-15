@@ -2,11 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import VideoButton from "../../components/VideoButton";
-import VideoShoppingModal from "../../components/VideoShoppingModal";
 import { IProduct } from "../../types/product";
 
 const Product: React.FC = () => {
-  const [showVideoModal, setShowVideoModal] = useState<boolean>(false)
   const [product, setProduct] = useState<IProduct>()
   const params = useParams()
   const product_id = params.id

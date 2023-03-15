@@ -1,8 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import UserLiveMeeting from "./pages/user/LiveMeeting";
 import LiveRequestPage from "./pages/support/LiveRequests";
 import ProductPage from "./pages/user/ProductList";
-import SupportLiveMeeting from "./pages/support/LiveMeeting";
 import Product from "./pages/user/Product";
 
 export const router = createBrowserRouter([
@@ -17,13 +15,5 @@ export const router = createBrowserRouter([
   {
     path: '/support/live-requests',
     element: <LiveRequestPage />
-  },
-  {
-    path: '/support/live-meeting/:meeting_id',
-    element: <SupportLiveMeeting />
-  },
-  {
-    path: '/live-meeting/:meeting_id',
-    element: <UserLiveMeeting />
   },
 ])
