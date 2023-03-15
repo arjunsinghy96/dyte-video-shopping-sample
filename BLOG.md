@@ -1,3 +1,8 @@
+
+**TLDR**; This tutorial shows you how to create a live shopping experience using the Dyte SDK, React, and Django. You'll learn how to set up a backend server with Django, integrate the Dyte SDK into your React frontend, and build a support page that allows you to join live video calls with customers who need assistance. By the end of this tutorial, you'll have a working live shopping experience that will allow your customers to shop online in a way that's more similar to an in-store experience.
+
+
+
 # Introduction
 In recent years, live shopping experiences have emerged as a popular way for businesses to connect with their customers in real-time, creating a more engaging and interactive shopping experience. With the increasing demand for virtual shopping, there is a need to build reliable and scalable solutions to deliver seamless live shopping experiences.
 
@@ -80,7 +85,6 @@ To use the Dyte APIs in our application, we need to create a Dyte app and obtain
 Let's add these keys to our django settings file
 
 ```python
-Copy code
 # live_shopping_backend/settings.py
 
 DYTE_API_BASE_URL = 'https://api.cluster.dyte.in/v2'
@@ -385,7 +389,7 @@ Let's add a custom `action` to assign a support user to the live shopping reques
 ```
 We are using the `DyteAPIClient.add_participant` to add a `Customer Support` participant to our Dyte meeting and returns `dyte_auth_token` for this participant.
 
-#### Getting dyte participant token for user
+#### 4. Getting dyte participant token for user
 
 Now, let's add another custom action, `user_token`, to retrieve `dyte_auth_token` for the customer. We will use this API to instantiate DyteClient for user.
 
@@ -514,7 +518,6 @@ npm run dev
 
 This will start the development server on http://localhost:5173.
 
-# Project Structure
 
 # Creating API clients
 
@@ -719,18 +722,251 @@ In the `CustomDyteMeeting` component, we are using
 - `useDyteMeeting()` hook to get the meeting instance created earlier,
 - [Dyte Components](https://docs.dyte.io/react-ui-kit/components) to create a meeting UI customised to our requirement.
 
-### Creating the Live Video Modal component
-### Creating live shopping button component
-### Creating product page
+### Creating the VideoShoppingModal component
+Let's now create a `Modal` using the `CustomDyteMeeting` component. The modal will show the following details:
 
-# Creating support components
-## integrating meeting component
-## creating support request list page
+1. Details of the product for which the use wants to raise a video shopping request.
+2. A form to get user details.
+3. Show the `CustomDyteMeeting` component once the user make a request for video shopping.
+
+We will also use this modal from support support view to answer the video shopping requests.
+
+Create a new file `VideoShoppingModal.tsx` and add the following code:
+
+```ts
+import React, { FormEvent, useState } from "react";
+import { createLiveVideoRequest } from "../api/backend";
+import { IProduct } from "../types/product";
+import LiveMeetingWrapper from "./LiveMeetingWrapper";
+
+interface VideoShoppingModalProps {
+  onClose: () => void,
+  meetingId?: number,
+  product: IProduct
+}
+
+const VideoShoppingModal: React.FC<VideoShoppingModalProps> = ({ onClose, product, meetingId }) => {
+
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [videoRequestId, setVideoRequestId] = useState<number>()
+
+  // use the following function to submit the user details and create a new live shopping request
+  const submitVideoRequest = async (e: FormEvent) => {
+    const video_request = await createLiveVideoRequest({
+      user_email: email,
+      user_name: name,
+      product: product
+    })
+    setVideoRequestId(video_request.id);
+  }
+
+  const renderProductDetails = (product: IProduct) => {
+// 	  Add code to render the product details here.
+  }
+  
+  const renderUserForm = () => {
+//    Add code to render user details form and 
+  }
+
+  const renderMeeting = () => {
+    if (meetingId) {
+      return <div className="flex-1 h-full rounded">
+        <LiveMeetingWrapper id={meetingId} type="support" onMeetingEnd={onClose}></LiveMeetingWrapper>
+      </div>
+    } else if (videoRequestId) {
+      return <div className="flex-1 h-full rounded">
+        <LiveMeetingWrapper id={videoRequestId} type="user" onMeetingEnd={onClose}></LiveMeetingWrapper>
+      </div>
+    }
+    return <></>
+  }
+
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 w-full h-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
+      <div className="fixed top-0 left-0 w-full h-full opacity-80 bg-slate-200">
+	  {*/ Transparent Overlay for modal*/}
+	  </div>
+		{*/ Modal content %}
+      <div className="relative mx-auto my-auto w-full h-[90%] max-w-[80%] opacity-100 bg-white rounded-lg shadow p-5">
+        <div className="flex-1 flex flex-row justify-center align-center h-full space-x-2">
+          <div className="w-1/3">
+            {renderProductDetails(product)}
+          </div>
+          {!videoRequestId && !meetingId && renderUserForm()}
+          {renderMeeting()}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default VideoShoppingModal;
+```
+
+Here we pass `support` as `type` to the `<LiveMeetingWrapper/>` component if `meetingId` is passed in the props to `VideoSoppingModal` component.
+
+`VideoShoppingModal` accepts two additional props:
+1. `product`: Product details which can be used to render the product.
+2. `onClose`: A method which we will call when the meeting ends.
+
+### Creating a live shopping button component
+As the last step for our user view, let's create a `VideoButton` which can be embedded in any page and would display `VideoShoppingModal`.
+
+Create a new file `VideoButton.tsx` in `./src/components/` with following code.
+
+```ts
+import React, { useState } from "react";
+import { IProduct } from "../types/product";
+import VideoShoppingModal from "./VideoShoppingModal";
+
+interface VideoButtonProps {
+  getProductDetails: () => IProduct
+}
+
+const VideoButton: React.FC<VideoButtonProps> = ({ getProductDetails }) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const product = getProductDetails();
+
+  return (
+    <div>
+      <div
+        onClick={() => setShowModal(true)}
+        className="cursor-pointer shadow-md fixed bottom-10 right-10 rounded-full bg-blue-600 h-16 w-16 text-white flex justify-center items-center text-3xl">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+        </svg>
+      </div>
+      {
+        product && showModal &&
+        <VideoShoppingModal
+          onClose={async () => setShowModal(false)}
+          product={product}
+        />
+      }
+    </div>
+  )
+}
+
+export default VideoButton;
+```
+
+The `getProductDetails` prop is a function which will be called to get the product details.
+
+### Integrating on Product Page
+With all the components ready, we can now integrate `VideoButton` on product page to display our video shopping button. Following is a sample.
+
+```ts
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import VideoButton from "../../components/VideoButton";
+import { IProduct } from "../../types/product";
+
+const ProductPage: React.FC = () => {
+  const [product, setProduct] = useState<IProduct>()
+  const params = useParams()
+  const product_id = params.id
+
+  const fetchProduct = async () => {
+    const product = await getProudct(product_id)
+    setProduct(product)
+  }
+
+  useEffect(() => {
+    fetchProduct()
+  }, [])
+
+  const renderProduct = (product: IProduct) => {
+//     Write code to render the product page
+  }
+
+  return (
+    <div className="h-screen container w-5/6 mx-auto">
+      {product && renderProduct(product)}
+      {product && <VideoButton getProductDetails={() => product} />}
+    </div>
+  )
+}
+
+export default ProductPage
+```
+
+# Creating support page
+
+In this section, we'll create a React page that displays a list of currently pending live video requests. We'll use the `useEffect` hook to fetch the list of requests from our Django backend and the `VideoShoppingModal` component from the previous section to connect support users to customers.
+
+Create a file `/.src/pages/support/LiveRequests.tsx`. This file will define our `LiveRequestsPage`.
+
+```ts
+import React, { useEffect, useState } from "react";
+import { listLiveVideoRequest, LiveVideoRequest } from "../../api/backend";
+import VideoShoppingModal from "../../components/VideoShoppingModal";
+
+
+const LiveRequestPage: React.FC = () => {
+  const [liveRequests, setLiveRequests] = useState<LiveVideoRequest[]>([])
+  const [activeLiveVideoRequest, setActiveLiveVideoRequest] = useState<LiveVideoRequest>()
+  const [showModal, setShowModal] = useState<boolean>(false)
+
+  const startMeeting = (videoRequest: LiveVideoRequest) => {
+    setActiveLiveVideoRequest(videoRequest);
+    setShowModal(true)
+  }
+
+  useEffect(() => {
+    const getliveRequests = async () => {
+      const resp = await listLiveVideoRequest();
+      setLiveRequests(resp)
+    }
+    getliveRequests();
+  }, [])
+
+  return (
+    <div className="max-w-lg flex flex-col space-y-4 mx-auto rounded">
+      {
+        liveRequests.map((req: LiveVideoRequest) => {
+          return (
+            <div key={req.id} className="p-5 border flex flex-row justify-between">
+              <div className="text-xl font-bold">{req.product.title}</div>
+              <div>
+                <button onClick={() => startMeeting(req)} className="rounded-full bg-indigo-600 text-white px-3 py-2">Join</button>
+              </div>
+            </div>
+          )
+        })
+      }
+      {showModal && activeLiveVideoRequest &&
+        <VideoShoppingModal
+          onClose={() => setShowModal(false)}
+          meetingId={activeLiveVideoRequest.id}
+          product={activeLiveVideoRequest.product}
+        />
+      }
+    </div>
+  )
+}
+
+export default LiveRequestPage
+```
+
+In this page, we fetch the `pending` video requests using `listLiveVideoRequest` method defined earlier. We also define `startMeeting` function which sets an active video request and opens the `VideoShoppingModal`.
 
 # Conclusion
-## Recap
-## Final thoughts on using Dyte SDK
-## Future enhancements and improvements.
 
+### Recap
+In this tutorial, we showed you how to create a live shopping experience using the Dyte SDK, React, and Django. By following the steps outlined in this tutorial, you should now have a working live shopping experience that's powered by [Dyte](https://dyte.io/).
 
+### Future enhancements and improvements.
+Here are some possible future enhancements that you might consider
 
+- Adding authentication and authorization to restrict access to the support page and live video calls.
+- Customizing the `VideoShoppingModal` component to include additional features like product recommendations, or shared shopping carts.
+- Enhancing the backend to include more sophisticated request processing, analytics, or integrations with third-party services.
+
+### Final thoughts on using Dyte SDK
+The Dyte SDK provides a robust video and audio platform that allowed us to seamlessly integrate video and audio calls into our application, allowing customers to shop online in a way that's more similar to an in-store experience.
+
+While this tutorial provides a solid foundation for building a live shopping experience using the Dyte SDK, there are many other features and integrations available that we did not cover. We encourage you to refer to the Dyte SDK documentation for more information on how to take advantage of these features.
+
+We also encourage you to experiment with different features, integrations, and enhancements using the Dyte SDK to create a truly unique and engaging shopping experience for your customers. With Dyte, you can also take advantage of advanced features like screen sharing, plugins and more.
