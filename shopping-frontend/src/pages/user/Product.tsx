@@ -9,14 +9,13 @@ const Product: React.FC = () => {
   const params = useParams()
   const product_id = params.id
 
-  const getProduct = async () => {
-    const product = await axios.get(`https://fakestoreapi.com/products/${product_id}`)
-    console.log(product.data)
-    setProduct(product.data)
+  const fetchProduct = async () => {
+    const product = await fetchProduct(product_id)
+    setProduct(product)
   }
 
   useEffect(() => {
-    getProduct()
+    fetchProduct()
   }, [])
 
   const renderReviews = () => {

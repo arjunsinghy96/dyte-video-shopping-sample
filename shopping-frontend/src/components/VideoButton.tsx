@@ -30,4 +30,4 @@ const VideoButton: React.FC<VideoButtonProps> = ({ getProductDetails }) => {
   )
 }
 
-export default VideoButton
+export default VideoButton;

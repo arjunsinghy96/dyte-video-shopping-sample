@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { FormEvent, useState } from "react";
 import { createLiveVideoRequest } from "../api/backend";
 import { IProduct } from "../types/product";
