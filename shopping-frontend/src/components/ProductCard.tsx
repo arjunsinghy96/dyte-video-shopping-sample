@@ -1,6 +1,5 @@
 import React from "react"
 import { IProduct } from "../types/product";
-import VideoShoppingButton from "./VideoShoppingButton";
 
 interface ProductCardProps {
   product: IProduct

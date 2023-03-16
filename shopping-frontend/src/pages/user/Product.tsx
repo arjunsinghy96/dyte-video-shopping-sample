@@ -12,7 +12,7 @@ const Product: React.FC = () => {
 
   const fetchProduct = async () => {
     if (product_id) {
-      const product = await getProduct(product_id)
+      const product = await getProduct(parseInt(product_id))
       setProduct(product)
     }
   }
