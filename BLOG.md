@@ -1,7 +1,4 @@
-
-**TLDR**; This tutorial shows you how to create a live shopping experience using the Dyte SDK, React, and Django. You'll learn how to set up a backend server with Django, integrate the Dyte SDK into your React frontend, and build a support page that allows you to join live video calls with customers who need assistance. By the end of this tutorial, you'll have a working live shopping experience that will allow your customers to shop online in a way that's more similar to an in-store experience.
-
-
+**TLDR;** This tutorial shows you how to create a live shopping experience using the Dyte SDK, React, and Django. You'll learn how to set up a backend server with Django, integrate the Dyte SDK into your React frontend, and build a support page that allows you to join live video calls with customers who need assistance. By the end of this tutorial, you'll have a working live shopping experience that will allow your customers to shop online in a way that's more similar to an in-store experience.
 
 # Introduction
 In recent years, live shopping experiences have emerged as a popular way for businesses to connect with their customers in real-time, creating a more engaging and interactive shopping experience. With the increasing demand for virtual shopping, there is a need to build reliable and scalable solutions to deliver seamless live shopping experiences.
@@ -781,6 +778,7 @@ const VideoShoppingModal: React.FC<VideoShoppingModalProps> = ({ onClose, produc
     }
     return <></>
   }
+<<<<<<< HEAD
 
 
   return (
@@ -877,6 +875,104 @@ const ProductPage: React.FC = () => {
     fetchProduct()
   }, [])
 
+=======
+
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 w-full h-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
+      <div className="fixed top-0 left-0 w-full h-full opacity-80 bg-slate-200">
+	  {*/ Transparent Overlay for modal*/}
+	  </div>
+		{*/ Modal content %}
+      <div className="relative mx-auto my-auto w-full h-[90%] max-w-[80%] opacity-100 bg-white rounded-lg shadow p-5">
+        <div className="flex-1 flex flex-row justify-center align-center h-full space-x-2">
+          <div className="w-1/3">
+            {renderProductDetails(product)}
+          </div>
+          {!videoRequestId && !meetingId && renderUserForm()}
+          {renderMeeting()}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default VideoShoppingModal;
+```
+
+Here we pass `support` as `type` to the `<LiveMeetingWrapper/>` component if `meetingId` is passed in the props to `VideoSoppingModal` component.
+
+`VideoShoppingModal` accepts two additional props:
+1. `product`: Product details which can be used to render the product.
+2. `onClose`: A method which we will call when the meeting ends.
+
+### Creating a live shopping button component
+As the last step for our user view, let's create a `VideoButton` which can be embedded in any page and would display `VideoShoppingModal`.
+
+Create a new file `VideoButton.tsx` in `./src/components/` with following code.
+
+```ts
+import React, { useState } from "react";
+import { IProduct } from "../types/product";
+import VideoShoppingModal from "./VideoShoppingModal";
+
+interface VideoButtonProps {
+  getProductDetails: () => IProduct
+}
+
+const VideoButton: React.FC<VideoButtonProps> = ({ getProductDetails }) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const product = getProductDetails();
+
+  return (
+    <div>
+      <div
+        onClick={() => setShowModal(true)}
+        className="cursor-pointer shadow-md fixed bottom-10 right-10 rounded-full bg-blue-600 h-16 w-16 text-white flex justify-center items-center text-3xl">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+        </svg>
+      </div>
+      {
+        product && showModal &&
+        <VideoShoppingModal
+          onClose={async () => setShowModal(false)}
+          product={product}
+        />
+      }
+    </div>
+  )
+}
+
+export default VideoButton;
+```
+
+The `getProductDetails` prop is a function which will be called to get the product details.
+
+### Integrating on Product Page
+With all the components ready, we can now integrate `VideoButton` on product page to display our video shopping button. Following is a sample.
+
+```ts
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import VideoButton from "../../components/VideoButton";
+import { IProduct } from "../../types/product";
+
+const ProductPage: React.FC = () => {
+  const [product, setProduct] = useState<IProduct>()
+  const params = useParams()
+  const product_id = params.id
+
+  const fetchProduct = async () => {
+    const product = await getProudct(product_id)
+    setProduct(product)
+  }
+
+  useEffect(() => {
+    fetchProduct()
+  }, [])
+
+>>>>>>> update blog
   const renderProduct = (product: IProduct) => {
 //     Write code to render the product page
   }
