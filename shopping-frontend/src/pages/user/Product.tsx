@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getProduct } from "../../api/fakestore";
 import VideoButton from "../../components/VideoButton";
 import { IProduct } from "../../types/product";
 
@@ -10,8 +11,10 @@ const Product: React.FC = () => {
   const product_id = params.id
 
   const fetchProduct = async () => {
-    const product = await fetchProduct(product_id)
-    setProduct(product)
+    if (product_id) {
+      const product = await getProduct(product_id)
+      setProduct(product)
+    }
   }
 
   useEffect(() => {
