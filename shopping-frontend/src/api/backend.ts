@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { IProduct } from '../types/product';
 
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || 'http://localhost:8000';
 
 interface CreateLiveVideoRequestData {
   user_name: string;
