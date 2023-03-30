@@ -432,6 +432,22 @@ urlpatterns = [
 ```
 
 
+### Starting the development server.
+
+Once we have set up your Django project and app, we can start the development server to test your code. To start the Django dev server, open a terminal and navigate to the root directory of our Django project. Then, enter the following command:
+
+```bash
+python manage.py runserver
+```
+
+This will start the Django dev server on the default port (8000) and we can access it by visiting http://localhost:8000 in your web browser. If you need to run the server on a different port, you can specify it as an argument to the runserver command:
+
+```bash
+python manage.py runserver 8080
+```
+This will start the server on port 8080, and you can access it at http://localhost:8080.
+
+
 # Setting up the React app
 Let us now setup our frontend for the project using react and typescript. We will use TailwindCSS for styling our components.
 
@@ -681,8 +697,15 @@ interface CustomDyteMeetingProps {
 
 const CustomDyteMeeting: React.FC<CustomDyteMeetingProps> = ({ onRoomLeft }) => {
   const { meeting } = useDyteMeeting();
-  meeting.joinRoom();
-  meeting.self.on('roomLeft', onRoomLeft);
+
+  useEffect(() => {
+    if(meeting) {
+      meeting.joinRoom();
+      meeting.self.on('roomLeft', onRoomLeft);
+      return () => {
+          meeting.self.removeListener('roomLeft', onRoomLeft);
+      }
+  }},[meeting]);
 
   return (
     <div className="h-full w-full flex flex-row space-x-2">
