@@ -40,6 +40,16 @@ const LiveMeetingWrapper: React.FC<LiveMeetingWrapperProps> = ({ id, type, dyte_
     setupDyteMeeting();
   }, [])
 
+  useEffect(() => {
+    if (meeting) {
+      meeting.joinRoom();
+      meeting.self.on('roomLeft', onMeetingEnd);
+      return () => {
+        meeting.self.removeListener('roomLeft', onMeetingEnd);
+      }
+    }
+  }, [meeting]);
+
   return (
     <DyteProvider value={meeting} fallback={<div>Loading</div>}>
       <CustomDyteMeeting onRoomLeft={onMeetingEnd} />

@@ -1,6 +1,6 @@
-import { DyteCameraToggle, DyteChat, DyteControlbar, DyteGrid, DyteLeaveButton, DyteMicToggle } from "@dytesdk/react-ui-kit";
+import { DyteCameraToggle, DyteChat, DyteControlbar, DyteGrid, DyteLeaveButton, DyteMeeting, DyteMicToggle } from "@dytesdk/react-ui-kit";
 import { useDyteMeeting } from "@dytesdk/react-web-core";
-import React from "react";
+import React, { useEffect } from "react";
 
 interface CustomDyteMeetingProps {
   onRoomLeft: () => void
@@ -8,8 +8,6 @@ interface CustomDyteMeetingProps {
 
 const CustomDyteMeeting: React.FC<CustomDyteMeetingProps> = ({ onRoomLeft }) => {
   const { meeting } = useDyteMeeting();
-  meeting.joinRoom();
-  meeting.self.on('roomLeft', onRoomLeft);
 
   return (
     <div className="h-full w-full flex flex-row space-x-2">
@@ -27,6 +25,7 @@ const CustomDyteMeeting: React.FC<CustomDyteMeetingProps> = ({ onRoomLeft }) => 
       <div className="flex-1 bg-gray-800 text-white">
         <DyteChat meeting={meeting} style={{ borderRadius: "10px" }} />
       </div>
+      {/* <DyteMeeting meeting={meeting} mode="fill" /> */}
     </div>
   )
 }
