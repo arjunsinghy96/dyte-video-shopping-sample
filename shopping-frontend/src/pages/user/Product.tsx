@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProduct } from "../../api/fakestore";
+import AppHeader from "../../components/AppHeader";
 import VideoButton from "../../components/VideoButton";
 import { IProduct } from "../../types/product";
 
@@ -96,10 +97,13 @@ const Product: React.FC = () => {
   }
 
   return (
-    <div className="h-screen container w-5/6 mx-auto">
-      {product && renderProduct(product)}
-      {product && <VideoButton getProductDetails={() => product} />}
-    </div>
+    <>
+      <AppHeader />
+      <div className="h-screen container w-5/6 mx-auto">
+        {product && renderProduct(product)}
+        {product && <VideoButton getProductDetails={() => product} />}
+      </div>
+    </>
   )
 }
 

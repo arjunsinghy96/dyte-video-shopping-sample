@@ -6,6 +6,7 @@ import axios from "axios";
 import VideoShoppingModal from "../../components/VideoShoppingModal";
 import { useNavigate } from "react-router-dom";
 import VideoButton from "../../components/VideoButton";
+import AppHeader from "../../components/AppHeader";
 
 const reducer = (state: any, action: {
   products: any; type: string;
@@ -38,6 +39,7 @@ export default function ProductPage() {
 
   return (
     <div className="h-[100vh] flex flex-col">
+      <AppHeader />
       <div className="grid grid-cols-4 gap-4 mx-auto container mt-5">
         {
           state.products.map((product: {
