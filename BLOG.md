@@ -655,6 +655,10 @@ const LiveMeetingWrapper: React.FC<LiveMeetingWrapperProps> = ({ id, type, dyte_
     }
   }
 
+  const onRoomLeft = () => {
+    // Event handler to run on leaving the meeting.
+  }
+
   const setupDyteMeeting = async () => {
     if (!dyte_auth_token) {
       dyte_auth_token = await getDyteAuthToken();
@@ -671,6 +675,15 @@ const LiveMeetingWrapper: React.FC<LiveMeetingWrapperProps> = ({ id, type, dyte_
   useEffect(() => {
     setupDyteMeeting();
   }, [])
+
+  useEffect(() => {
+    if(meeting) {
+      meeting.joinRoom();
+      meeting.self.on('roomLeft', onRoomLeft);
+      return () => {
+          meeting.self.removeListener('roomLeft', onRoomLeft);
+      }
+  }}, [meeting]);
 
   return (
     <DyteProvider value={meeting} fallback={<div>Loading...</div>}>
@@ -697,15 +710,6 @@ interface CustomDyteMeetingProps {
 
 const CustomDyteMeeting: React.FC<CustomDyteMeetingProps> = ({ onRoomLeft }) => {
   const { meeting } = useDyteMeeting();
-
-  useEffect(() => {
-    if(meeting) {
-      meeting.joinRoom();
-      meeting.self.on('roomLeft', onRoomLeft);
-      return () => {
-          meeting.self.removeListener('roomLeft', onRoomLeft);
-      }
-  }},[meeting]);
 
   return (
     <div className="h-full w-full flex flex-row space-x-2">
