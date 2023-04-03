@@ -7,7 +7,7 @@ In this technical blog, we will explore how to create a live shopping experience
 
 We will start by setting up our development environment, installing the necessary libraries and packages, and configuring our backend and frontend applications. We will then dive into the implementation of our live shopping application, including the integration of Dyte SDK and the creation of a dynamic user interface using React.
 
-Whether you're a seasoned developer or just getting started with live shopping, this technical blog will equip you with the knowledge and skills to create a reliable and engaging live shopping experience using Dyte SDK, React, and Django. By the end of this tutorial, you will be able to:
+Whether you're a seasoned developer or just getting started with live shopping, this technical blog will equip you with the knowledge and skills to create a reliable and engaging live shopping experience. By the end of this tutorial, you will be able to:
 
  - Set up a development environment and configure the necessary backend and frontend components
  - Integrate Dyte SDK into your application to enable real-time communication features such as video, audio, and chat
@@ -29,7 +29,7 @@ Additionally, make sure you have the following software installed on your machin
 With these prerequisites in place, you're ready to start building your live shopping application with Dyte SDK, React, and Django.
 
 # Setting up the backend
-In this section, we'll set up the Django backend for our live shopping application. We'll start by creating a virtual environment for development, then create a new Django project and app. Finally, we'll add the necessary dependencies and create a Dyte app for integrating Dyte API.
+In this section, we'll set up the Django backend for our live shopping application. We'll start by creating a virtual environment for development, then create a new Django project and app. Finally, we'll add the necessary dependencies and create a Dyte app for integrating the Dyte API.
 
 ### Creating a Virtual Environment for Development
 Before we start, let's create a virtual environment for our project. This will ensure that our dependencies are isolated from the global Python environment and make it easier to manage dependencies.
@@ -384,11 +384,11 @@ Let's add a custom `action` to assign a support user to the live shopping reques
             {"dyte_auth_token": participant["token"]}, status=status.HTTP_201_CREATED
         )
 ```
-We are using the `DyteAPIClient.add_participant` to add a `Customer Support` participant to our Dyte meeting and returns `dyte_auth_token` for this participant.
+We are using the `DyteAPIClient.add_participant` to add a `Customer Support` participant to our Dyte meeting and return `dyte_auth_token` for this participant.
 
 #### 4. Getting dyte participant token for user
 
-Now, let's add another custom action, `user_token`, to retrieve `dyte_auth_token` for the customer. We will use this API to instantiate DyteClient for user.
+Now, let's add another custom action, `user_token`, to retrieve `dyte_auth_token` for the customer. We will use this API to initiate DyteClient for user.
 
 ```python
     @action(methods=["get"], detail=True, url_path="user-token")
@@ -434,13 +434,13 @@ urlpatterns = [
 
 ### Starting the development server.
 
-Once we have set up your Django project and app, we can start the development server to test your code. To start the Django dev server, open a terminal and navigate to the root directory of our Django project. Then, enter the following command:
+Once we have set up our Django project and app, we can start the development server to test our code. To start the Django dev server, open a terminal and navigate to the root directory of our Django project. Then, enter the following command:
 
 ```bash
 python manage.py runserver
 ```
 
-This will start the Django dev server on the default port (8000) and we can access it by visiting http://localhost:8000 in your web browser. If you need to run the server on a different port, you can specify it as an argument to the runserver command:
+This will start the Django dev server on the default port (8000) and we can access it by visiting http://localhost:8000 in our web browser. If you need to run the server on a different port, you can specify it as an argument to the runserver command:
 
 ```bash
 python manage.py runserver 8080
@@ -487,7 +487,7 @@ module.exports = {
 }
 ```
 
-Next, lets add the `@tailwind` directives for each of Tailwind’s layers to your `./src/index.css` file. Import this css file in `./src/main.tsx` as `import ./index.css`
+Next, let's add the `@tailwind` directives for each of Tailwind’s layers to your `./src/index.css` file. Import this css file in `./src/main.tsx` as `import ./index.css`
 
 ### Installing Dyte SDK and other dependencies.
 
@@ -594,7 +594,7 @@ export const getUserToken = async(
 
 ```
 
-Here we have created functions to interact with the Backend API to `create`, `list` and `start` a video request, and to retrieve `dyte_auth_token` for the user. You can add authentication details if you have implemented them in you backend.
+Here, we have created functions to interact with the Backend API to `create`, `list` and `start` a video request, and to retrieve `dyte_auth_token` for the user. You can add authentication details if you have implemented them in you backend.
 
 ### Fake Product API client
 
@@ -625,7 +625,7 @@ export const getProduct = async (id: number): Promise<IProduct[]> => {
 ```
 Here we have `listProducts` to get a list of products and `getProduct` to retrieve a single product detail.
 
-With our API clients ready let's start building the interface for customers.
+With our API clients ready, let's start building the interface for customers.
 
 # Creating consumer components
 ### Creating the Dyte Meeting component
@@ -693,7 +693,7 @@ const LiveMeetingWrapper: React.FC<LiveMeetingWrapperProps> = ({ id, type, dyte_
 
 export default LiveMeetingWrapper;
 ```
-Here we have used the `getUserToken` and `startLiveVideoRequest` api calls to our backend to fetch the auth token if not provided. We used `useDyteClient` to initiate the `meeting` after making sure use have the `dyte_auth_token`.
+Here we have used the `getUserToken` and `startLiveVideoRequest` API calls to our backend to fetch the auth token, if not provided. We used `useDyteClient` to initiate the `meeting` after making sure use have the `dyte_auth_token`.
 
 We have also used `DyteProvider`. This will allow us to use [Dyte hooks](https://docs.dyte.io/react-ui-kit/using-hooks) `useDyteMeeting` and `useDyteSelector` get `DyteClient` in our child components.
 
@@ -916,7 +916,7 @@ const ProductPage: React.FC = () => {
 export default ProductPage
 ```
 
-# Creating support page
+# Creating the support page
 
 In this section, we'll create a React page that displays a list of currently pending live video requests. We'll use the `useEffect` hook to fetch the list of requests from our Django backend and the `VideoShoppingModal` component from the previous section to connect support users to customers.
 
@@ -979,10 +979,10 @@ In this page, we fetch the `pending` video requests using `listLiveVideoRequest`
 # Conclusion
 
 ### Recap
-In this tutorial, we showed you how to create a live shopping experience using the Dyte SDK, React, and Django. By following the steps outlined in this tutorial, you should now have a working live shopping experience that's powered by [Dyte](https://dyte.io/).
+In this tutorial, we showed how to create a live shopping experience using the Dyte SDK, React, and Django. By following the steps outlined in this tutorial, you should now have a working live shopping experience that's powered by [Dyte](https://dyte.io/).
 
 ### Future enhancements and improvements.
-Here are some possible future enhancements that you might consider
+Here are some possible future enhancements you might consider
 
 - Adding authentication and authorization to restrict access to the support page and live video calls.
 - Customizing the `VideoShoppingModal` component to include additional features like product recommendations, or shared shopping carts.
