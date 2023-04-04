@@ -1,3 +1,5 @@
+from typing import List
+
 from urllib.parse import urljoin
 import requests
 from django.conf import settings
@@ -64,6 +66,6 @@ class DyteAPIClient(object):
         return cls._fetch(request)
 
     @classmethod
-    def fetch_all_presets(cls) -> dict:
+    def fetch_all_presets(cls) -> List[dict]:
         request = requests.Request(method="GET", url=cls._create_url(f"presets"))
         return cls._fetch(request)

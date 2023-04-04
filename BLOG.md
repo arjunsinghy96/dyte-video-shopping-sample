@@ -87,13 +87,16 @@ Let's add these keys to our django settings file
 DYTE_API_BASE_URL = 'https://api.cluster.dyte.in/v2'
 DYTE_ORG_ID = 'YOUR_ORG_ID_HERE'
 DYTE_API_KEY = 'YOUR_API_KEY_HERE'
+DYTE_ORG_PRESET_NAME = 'PRESET_NAME_FROM_YOUR_ORG'
 ```
+
+For more information on `presets`, check out the [Preset section of the "Getting Started"](https://docs.dyte.io/getting-started#preset) document.
 
 With these steps complete, we're ready to start building the API endpoints for our live shopping application!
 
 ### Installing django apps
 
-Update the `settings.py` file to include the `live_shopping` and `dyte` app.
+Update the `settings.py` file to include the `live_shopping` app.
 
 ```python
 # live_shopping_backend/settings.py
@@ -180,13 +183,51 @@ class DyteAPIClient(object):
             ),
         )
         return cls._fetch(request)
+
+    @classmethod
+    def fetch_all_presets(cls) -> List(dict):
+        request = requests.Request(method="GET", url=cls._create_url(f"presets"))
+        return cls._fetch(request)
 ```
 In the above code,
 
 Creating a client like this abstracts away the low-level details of making API requests, making it easier to use the API and reducing the amount of code needed to interact with it. This can lead to improved readability, maintainability, and overall code quality.
 
 # Creating the `live_shopping` app
-Let's create our `live_shopping` django app to create and manage live video requests.
+Let's update our `live_shopping` django app to create and manage live video requests.
+
+### Adding checks for Dyte configuration
+
+Let's add a check on application startup to make sure that proper Dyte settings are used. Open the `live_shopping/apps.py` file and add the following method to `LiveShoppingConfig`:
+
+```python
+# live_shopping/models.py
+from django.core.exceptions import ImproperlyConfigured
+
+class LiveShoppingConfig(AppConfig):
+  # Auto generated code here
+
+  def ready(self):
+    from .dyte_api_client import DyteAPIClient
+    from django.conf import settings
+
+    try:
+        all_presets = DyteAPIClient.fetch_all_presets()
+    except requests.exceptions.HTTPError:
+        raise ImproperlyConfigured(
+            f"Failed to get available Dyte presets. Make sure you have set correct 'DYTE_ORG_ID' and 'DYTE_API_KEY' in settings."
+        )
+    preset_exists = list(
+        filter(lambda x: x["name"] == settings.DYTE_ORG_PRESET_NAME, all_presets)
+    )
+    if not preset_exists:
+        raise ImproperlyConfigured(
+            f"The preset '{settings.DYTE_ORG_PRESET_NAME}' does not exists. "
+            "See https://docs.dyte.io/getting-started#preset for more info"
+        )
+```
+
+In the above code, we are fetching all the available `presets` in the Dyte org and verifying that `settings.DYTE_ORG_PRESET_NAME` is present. We raise an error if it does not exist.
 
 ### Creating models.
 
