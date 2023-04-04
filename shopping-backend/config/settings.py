@@ -141,3 +141,4 @@ APPEND_SLASH = False
 DYTE_API_BASE_URL = "https://api.cluster.dyte.in/v2/"
 DYTE_ORG_ID = os.environ.get("DYTE_ORG_ID", "")
 DYTE_API_KEY = os.environ.get("DYTE_API_KEY", "")
+DYTE_ORG_PRESET_NAME = os.environ.get("DYTE_ORG_PRESET_NAME", "")

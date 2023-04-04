@@ -62,3 +62,8 @@ class DyteAPIClient(object):
             ),
         )
         return cls._fetch(request)
+
+    @classmethod
+    def fetch_all_presets(cls) -> dict:
+        request = requests.Request(method="GET", url=cls._create_url(f"presets"))
+        return cls._fetch(request)

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
@@ -26,7 +27,7 @@ class LiveVideoRequestViewSet(ViewSet):
             participant = DyteAPIClient.add_participant(
                 dyte_meeting["id"],
                 user_name,
-                preset_name="video_shoping",
+                preset_name=settings.DYTE_ORG_PRESET_NAME,
                 custom_participant_id=user_email,
             )
             live_request = LiveVideoRequest.objects.create(
@@ -66,7 +67,7 @@ class LiveVideoRequestViewSet(ViewSet):
         participant = DyteAPIClient.add_participant(
             live_request.dyte_meeting_id,
             "Customer Support",
-            "video_shoping",
+            settings.DYTE_ORG_PRESET_NAME,
             "customer_support",
         )
         live_request.support_user_dyte_participant_id = participant["id"]
