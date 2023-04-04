@@ -189,7 +189,6 @@ class DyteAPIClient(object):
         request = requests.Request(method="GET", url=cls._create_url(f"presets"))
         return cls._fetch(request)
 ```
-In the above code,
 
 Creating a client like this abstracts away the low-level details of making API requests, making it easier to use the API and reducing the amount of code needed to interact with it. This can lead to improved readability, maintainability, and overall code quality.
 
