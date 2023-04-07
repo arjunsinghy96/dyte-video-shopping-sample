@@ -22,7 +22,7 @@ const CustomDyteMeeting: React.FC<CustomDyteMeetingProps> = ({ onRoomLeft }) => 
           <DyteLeaveButton onClick={() => meeting.leaveRoom()} />
         </div>
       </div>
-      <div className="flex-1 bg-gray-800 text-white">
+      <div className="flex-1 border rounded-md">
         <DyteChat meeting={meeting} style={{ borderRadius: "10px" }} />
       </div>
       {/* <DyteMeeting meeting={meeting} mode="fill" /> */}

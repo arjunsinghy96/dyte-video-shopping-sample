@@ -1,3 +1,4 @@
+import { provideDyteDesignSystem } from "@dytesdk/react-ui-kit";
 import { DyteProvider, useDyteClient } from "@dytesdk/react-web-core";
 import React, { useEffect } from "react";
 import { getUserToken, startLiveVideoRequest } from "../api/backend";
@@ -39,6 +40,12 @@ const LiveMeetingWrapper: React.FC<LiveMeetingWrapperProps> = ({ id, type, dyte_
   useEffect(() => {
     setupDyteMeeting();
   }, [])
+
+  useEffect(() => {
+    provideDyteDesignSystem(document.body, {
+      theme: 'light',
+    });
+  }, []);
 
   useEffect(() => {
     if (meeting) {
